@@ -1,0 +1,6 @@
+dependencies:
+- name: opensearch-with-dashboard
+  repository: file://opensearch
+  version: 0.1.0
+digest: sha256:ff156f2fcc11e2e102042ed92c9187b75cd518d69bb4491af74479cdf0fc6eeb
+generated: "2022-06-09T13:00:23.2855051+02:00"

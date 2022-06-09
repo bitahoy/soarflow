@@ -1,0 +1,13 @@
+apiVersion: v2
+name: soarflow
+
+type: application
+
+version: 0.1.0
+
+
+dependencies:
+  - name: opensearch-with-dashboard
+    version: 0.1.0
+    repository: "file://opensearch"
+
