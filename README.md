@@ -73,7 +73,10 @@ sudo ctlptl get cluster kind-kind -o template --template '{{.status.localRegistr
 ### Use Tilt
 
 ```
-sudo helm dep update # on first usage to update dependencies
+cd opensearch
+sudo helm dep update
+cd ..
+sudo helm dep update
 sudo tilt up
 ```
 To delete all resources again:
