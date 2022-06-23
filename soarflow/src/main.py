@@ -1,5 +1,6 @@
 import aiohttp
 import asyncio
+from imports import *
 
 # example
 # https://opensearch.org/docs/latest/opensearch/popular-api/
@@ -16,6 +17,8 @@ class OpenSearchConnection:
 
 async def main():
     print('Hello, world!')
+    #imports = Imports
+    #await imports.importFromPcap(imports, "/home/hacker/Downloads/18-06-14.pcap")
     conn = OpenSearchConnection('https://admin:admin@localhost:9200/')
     print(await conn.get_search_results())
 
