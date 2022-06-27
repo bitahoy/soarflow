@@ -22,3 +22,4 @@ k8s_resource(
     ])
 
 local_resource('soarflow-main', cmd="pip3 install -r soarflow/requirements.txt", serve_cmd='python3 soarflow/src/main.py', deps=['soarflow/src/'], resource_deps=['opensearch-cluster-master', 'soarflow-opensearch-dashboards'])
+local_resource('soarflow-bitahoycloud', cmd="pip3 install -r soarflow/requirements.txt", serve_cmd='python3 soarflow/src/bitahoycloud.py', deps=['soarflow/src/'], resource_deps=['opensearch-cluster-master', 'soarflow-opensearch-dashboards'])
