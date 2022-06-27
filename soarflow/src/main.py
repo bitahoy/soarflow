@@ -11,8 +11,8 @@ from opensearch import OpenSearchConnection
 
 async def main():
     print('Hello, world!')
-    #imports = Imports
-    #await imports.importFromPcap(imports, "/home/hacker/Downloads/18-06-14.pcap")
+    imports = Imports
+    await imports.importFromPcap(imports, "./../venv/testwithdns.pcap")
     conn = OpenSearchConnection('https://admin:admin@localhost:9200/')
 
     print(await conn.create_index('test'))

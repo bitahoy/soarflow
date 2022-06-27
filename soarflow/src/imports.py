@@ -1,20 +1,26 @@
-import os
-import subprocess
-import aiohttp
-import asyncio
-import time
-import shlex
-
+from scapy.all import *
+from scapy.layers.dns import DNS
+from src.jsonPacket import JsonPacket
+from src.opensearch import OpenSearchConnection
 
 class Imports:
 
     async def importFromPcap(self, pcaplocation):
-        timestamp = str(time.time())
-        newpath = "./../json/" + timestamp
-        if not os.path.exists(newpath):
-            os.makedirs(newpath)
-        cmd = "cat " + pcaplocation + " | ./../util/pcap2json --json-packet"
-        args = shlex.split(cmd)
-        process = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout, stderr = process.communicate()
+        scapy_cap = rdpcap(pcaplocation)
+        jsonp = JsonPacket()
+        opensearchcon = OpenSearchConnection("http://127.0.0.1:5601/")
+        #opensearchcon.create_index("test")
+        for packet in scapy_cap:
+            if(packet.haslayer(DNS)):
+                jsondmp = jsonp.pkt2dict(packet)
+                print(jsondmp)
+                opensearchcon.add_document("test", jsondmp)
+                #if(packet.qdcount > 0 and isinstance(packet.qd, DNSQR)):
+                #    name = packet.qd.qname
+                #elif(packet.ancount > 0 and isinstance(packet.an, DNSRR)):
+                #    name = packet.an.rdata
+                #else:
+                #    continue
+
+                #print(name)
 
