@@ -35,6 +35,17 @@ async def upload_pcap(request: Request, file: UploadFile, index: str = Body()):
     return templates.TemplateResponse("upload_pcap.html",{"request":request, "filename":file.filename  + " -> " + f"{index}-{int(time.time())}", "title": "Upload PCAP", "output": result, "success": success})
 
 
+@app.post("/upload/csv")
+async def upload_csv(request: Request, file: UploadFile, index: str = Body()):
+    success = True
+    try:
+        import imports
+        result = await imports.Imports(app.opensearchconnection).importFromCsv(file.file.read().decode(), f"{index}-{int(time.time())}")
+    except:
+        result = format_exc()
+        success = False
+    return templates.TemplateResponse("upload_pcap.html",{"request":request, "filename":file.filename  + " -> " + f"{index}-{int(time.time())}", "title": "Upload CSV", "output": result, "success": success})
+
 @app.on_event("startup")
 async def startup():
     app.opensearchconnection = OpenSearchConnection('https://admin:admin@opensearch-cluster-master:9200/')

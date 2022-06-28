@@ -20,4 +20,28 @@
     </div>
     </form>
   </div>
+
+  <p></p>
+
+
+  <div class="card">
+    <div class="card-header">
+      Uplaod CSV
+    </div>
+    <form method="post" action="/upload/csv" enctype="multipart/form-data">
+    <div class="card-body">
+      <h5 class="card-title">Upload CSV data</h5>
+      <div class="mb-3">
+        <div class="input-group mb-2">
+          <div class="input-group-prepend">
+            <div class="input-group-text">Indexname</div>
+          </div>
+          <input type="text" class="form-control" id="index" name="index" placeholder="csvdata" value="csvdata">
+        </div>
+        <input class="form-control" type="file" id="formFile" name="file" accept=".csv">
+      </div>
+      <button type="submit" class="btn btn-primary">Analyze & Import</a>
+    </div>
+    </form>
+  </div>
 {% endblock %}

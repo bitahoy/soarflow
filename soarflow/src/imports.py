@@ -81,3 +81,32 @@ class Imports:
                 i += 1
         return "\n" + str(await self.opensearchconnection.add_documents(indexname+"-"+indexversion, upload))
 
+    async def importFromCsv(self, csv: str, indexname="csv"):
+        indexname, indexversion = indexname.rsplit("-",1)
+        header, body = csv.split("\n", 1)
+        headers = header.split(",")
+        items = []
+        for line in body.split("\n"):
+            if line == "":
+                continue
+            d = {}
+            for i, h in enumerate(headers):
+                d[h] = line.split(",")[i]
+            if "time" in d:
+                d["@timestamp"] = int(float(d["time"]) * 1000)
+            items.append(d)
+
+            
+        indexname = indexname + "-" + indexversion
+        
+
+        await self.opensearchconnection.create_index(indexname, {
+    "mappings": {
+    "properties": {
+        "@timestamp": {
+        "type": "date"
+        },
+    }
+  }
+    }, True)
+        return "\n" + str(await self.opensearchconnection.add_documents(indexname, items))
