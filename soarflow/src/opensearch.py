@@ -54,8 +54,16 @@ class OpenSearchConnection:
                     header["index"]["_id"] = document["_id"]
                     del document["_id"]
                 data += json.dumps(header) + "\n"
-                data += json.dumps(document) + "\n"
-                
+                try:
+                    data += json.dumps(document) + "\n"
+                except TypeError as e:
+                    print(document)
+                    raise e
 
             async with session.post(self.base_url + "/" + index_name + "/_bulk", data=data, headers={'content-type':'application/json', 'charset':'UTF-8'}) as resp:
+                return await resp.json()
+
+    async def create_template(self, template_name, template):
+        async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=False)) as session:
+            async with session.put(self.base_url + "/_template/" + template_name, json=template) as resp:
                 return await resp.json()

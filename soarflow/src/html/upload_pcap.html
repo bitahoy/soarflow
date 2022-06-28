@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if success %}
+<div class="alert alert-success" role="alert">
+    <h4 class="alert-heading">Successfully analyzed pcap!</h4>
+    <p>Filename: {{ filename }}</p>
+    <code>
+        {{ output }}
+    </code>
+    <hr>
+    <p class="mb-0">The data should be available in the opensearch dashboard now.</p>
+  </div>
+  {% else %}
+  
+<div class="alert alert-warning" role="alert">
+    <h4 class="alert-heading">Error while analyzing pcap!</h4>
+    <p>Filename: {{ filename }}</p>
+    <code>
+        {{ output }}
+    </code>
+  </div>
+  {% endif %}
+{% endblock %}

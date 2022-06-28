@@ -26,16 +26,16 @@ spec:
         ports:
         - containerPort: 80
         resources: {}
-        securityContext: 
-          readOnlyRootFilesystem: true
+        #securityContext: 
+          #readOnlyRootFilesystem: true
         volumeMounts: []
         resources:
           requests:
             memory: "64Mi"
             cpu: "16m"
           limits:
-            memory: "512Mi"
-            cpu: "128m"
+            memory: "1Gi"
+            cpu: "512m"
         readinessProbe:
           httpGet:
             path: /?readinessprobe=true
