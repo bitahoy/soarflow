@@ -44,4 +44,48 @@
     </div>
     </form>
   </div>
+
+  
+  <p></p>
+
+
+  <div class="card">
+    <div class="card-header">
+      Bitahoy Cloud
+    </div>
+    <form method="post" action="/bitahoy">
+    <div class="card-body">
+      <h5 class="card-title">Sync with bitahoy cloud</h5>
+        {% if bitahoy != None %}
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">Successfully connected to bitahoy cloud!</h4>
+        </div>
+        <p>Entries synced: {{ bitahoy }}</p>
+            <p>
+                <input type="hidden" name="action" value="start" />
+                <input type="hidden" name="email" value="x" />
+                <input type="hidden" name="password" value="x" />
+                <button type="submit" class="btn btn-primary">Stop syncing</button>
+            </p>
+        {% else %}
+      <div class="mb-3">
+        <div class="input-group mb-2">
+          <div class="input-group-prepend">
+            <div class="input-group-text">Username</div>
+          </div>
+          <input type="text" class="form-control" id="email" name="email" placeholder="demo@bitahoy.com" value="demo@bitahoy.com">
+        </div>
+        <div class="input-group mb-2">
+          <div class="input-group-prepend">
+            <div class="input-group-text">Username</div>
+          </div>
+          <input type="password" class="form-control" id="password" name="password" placeholder="password" value="password">
+        </div>
+      </div>
+      <input type="hidden" name="action" value="start" />
+      <button type="submit" class="btn btn-primary">Start Import</a>
+        {% endif %}
+    </div>
+    </form>
+  </div>
 {% endblock %}

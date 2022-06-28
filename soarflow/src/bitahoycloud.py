@@ -8,14 +8,20 @@ import os
 
 
 
-async def get_auth_token():
-    async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=False)) as session:
-        async with session.post("https://auth.bitahoy.cloud/login", json={"email": os.environ["BITAHOY_USER"], "password": os.environ["BITAHOY_PASS"]}) as resp:
-            return (await resp.json())["token"]
+async def get_auth_token(email=None, password=None):
+  if not email:
+    email = os.environ.get("BITAHOY_EMAIL")
+  if not password:
+    password = os.environ.get("BITAHOY_PASSWORD")
+  async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=False)) as session:
+      async with session.post("https://auth.bitahoy.cloud/login", json={"email": email, "password": password}) as resp:
+          return (await resp.json())["token"]
 
 
-async def poll_blocked_domains(token):
-    conn = OpenSearchConnection('https://admin:admin@localhost:9200/')
+async def poll_blocked_domains(token, conn, entries=[None]):
+    if entries[0] is None:
+      entries[0] = 0
+    # conn = OpenSearchConnection('https://admin:admin@localhost:9200/')
     print(await conn.create_index('contentblocking', {
         
   "mappings": {
@@ -52,6 +58,7 @@ async def poll_blocked_domains(token):
             await websocket.send(json.dumps({"action": "get_data_detailed", "id": lastid}))
             message = json.loads(await websocket.recv())
             print(f"pulled {len(message['detailed'])} new records")
+            entries[0] += len(message['detailed'])
             items = []
             for item in message["detailed"]:
                 lastid = max(lastid, item["id"])
@@ -71,9 +78,9 @@ async def poll_blocked_domains(token):
             await asyncio.sleep(10)
 
 
-async def main():
-    token = await get_auth_token()
-    await poll_blocked_domains(token)
+# async def main():
+#     token = await get_auth_token()
+#     await poll_blocked_domains(token)
 
 
-asyncio.run(main())
+# asyncio.run(main())
