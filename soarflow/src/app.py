@@ -21,22 +21,34 @@ templates = Jinja2Templates(directory="html")
 async def home(request: Request):
 	return templates.TemplateResponse("landing.html",{"request":request, "title": "Integrations", "bitahoy": app.counter[0]})
 
+
+@app.post("/actions")
+async def actions(request: Request):
+    print(request.body)
+    return {"success": "true"}
+
+@app.get("/bitahoy/stats")
+async def bitahoy_stats(request: Request):
+    return {"bitahoy": app.counter[0]}
+
 @app.post("/bitahoy")
 async def bitahoy(email: str = Form(), password: str = Form(), action: str = Form()):
     print(f"{email} {password} {action}")
     if action == "start":
-        token = await get_auth_token(email, password)
-        app.task = asyncio.create_task(poll_blocked_domains(token, app.opensearchconnection, app.counter))
+        async def task():
+            token = await get_auth_token(email, password)
+            await poll_blocked_domains(token, app.opensearchconnection, app.counter)
+        app.task = asyncio.create_task(task())
         def callback(t):
             print("task cancelled")
             app.task = None
-            app.counter = [0]
+            app.counter = [None]
         app.task.add_done_callback(callback)
     if action == "stop":
         if app.task:
             app.task.cancel()
             app.task = None
-            app.counter = [0]
+            app.counter = [None]
     return RedirectResponse(url="/", status_code=302)
 
 @app.post("/upload/pcap")
@@ -64,6 +76,17 @@ async def upload_csv(request: Request, file: UploadFile, index: str = Body()):
         result = format_exc()
         success = False
     return templates.TemplateResponse("upload_pcap.html",{"request":request, "filename":file.filename  + " -> " + f"{index}-{int(time.time())}", "title": "Upload CSV", "output": result, "success": success})
+
+@app.post("/upload/json")
+async def upload_json(request: Request, file: UploadFile, index: str = Body()):
+    success = True
+    try:
+        import imports
+        result = await imports.Imports(app.opensearchconnection).importFromJson(file.file.read().decode(), f"{index}-{int(time.time())}")
+    except:
+        result = format_exc()
+        success = False
+    return templates.TemplateResponse("upload_pcap.html",{"request":request, "filename":file.filename  + " -> " + f"{index}-{int(time.time())}", "title": "Upload JSON", "output": result, "success": success})
 
 
 @app.on_event("startup")

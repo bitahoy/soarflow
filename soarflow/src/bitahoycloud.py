@@ -14,7 +14,9 @@ async def get_auth_token(email=None, password=None):
   if not password:
     password = os.environ.get("BITAHOY_PASSWORD")
   async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=False)) as session:
-      async with session.post("https://auth.bitahoy.cloud/login", json={"email": email, "password": password}) as resp:
+      async with session.get("https://auth.bitahoy.cloud/", timeout=10) as resp:
+        print(await resp.text())
+      async with session.post("https://auth.bitahoy.cloud/login", json={"email": email, "password": password}, timeout=10) as resp:
           return (await resp.json())["token"]
 
 
@@ -55,7 +57,7 @@ async def poll_blocked_domains(token, conn, entries=[None]):
         await websocket.recv()
         lastid = 0
         while True:
-            await websocket.send(json.dumps({"action": "get_data_detailed", "id": lastid}))
+            await websocket.send(json.dumps({"action": "get_data_detailed", "id": lastid, "show_benign": True}))
             message = json.loads(await websocket.recv())
             print(f"pulled {len(message['detailed'])} new records")
             entries[0] += len(message['detailed'])

@@ -1,3 +1,4 @@
+import json
 from scapy.all import *
 from scapy.layers.dns import DNS
 from jsonPacket import pkt2dict
@@ -94,6 +95,32 @@ class Imports:
                 d[h] = line.split(",")[i]
             if "time" in d:
                 d["@timestamp"] = int(float(d["time"]) * 1000)
+            items.append(d)
+
+            
+        indexname = indexname + "-" + indexversion
+        
+
+        await self.opensearchconnection.create_index(indexname, {
+    "mappings": {
+    "properties": {
+        "@timestamp": {
+        "type": "date"
+        },
+    }
+  }
+    }, True)
+        return "\n" + str(await self.opensearchconnection.add_documents(indexname, items))
+
+
+    async def importFromJson(self, body: str, indexname="json"):
+        indexname, indexversion = indexname.rsplit("-",1)
+        body = body.strip("\n")
+        items = []
+        for line in body.split("\n"):
+            d = json.loads(line)
+            if "@timestamp" in d:
+                d["@timestamp"] = int(float(d["@timestamp"]))
             items.append(d)
 
             
