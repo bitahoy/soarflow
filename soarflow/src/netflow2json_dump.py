@@ -43,6 +43,23 @@ def connect_opensearch(index_name_var):
             'index': {
                 'number_of_shards': 4
             }
+        },
+        "mappings": {
+                    "_default_": {
+                        "_all": {
+                            "enabled": False
+                        },
+                        "properties": {
+                            "@version": {
+                                "index": "analyzed",
+                                "type": "integer"
+                            },
+                            "@timestamp": {
+                                "index": "analyzed",
+                                "type": "date"
+                            }
+                        }
+                    }
         }
     }
     # index_body = {
@@ -125,7 +142,7 @@ def remve_entries_clean_index(index_name, submitted_ids):
     print(response)
 
 
-def sumbit_json(opensearch_client, index_name_var, id, json_entry):
+def sumbit_json(opensearch_client, index_name_var, json_entry):
     # Add a document to the index.
     dummy_json_entry = {"1655817798.8633146": {"client": ['172.30.37.246', '47524'],
                                                "header": {"version": 5, "count": 16, "uptime": 1000,
@@ -146,7 +163,7 @@ def sumbit_json(opensearch_client, index_name_var, id, json_entry):
         index=index_name_var,
         body=json_entry,
         # body = json.dumps(json_entry),
-        id=str(id).replace('.', ''),  # Opensearch doesn't accept commas in id names.,  # we use timestamp (ts_ from the function above on the stack)
+        # id=str(id).replace('.', ''),  # Opensearch doesn't accept commas in id names.,  # we use timestamp (ts_ from the function above on the stack)
         refresh=True
     )
 
@@ -204,18 +221,22 @@ if __name__ == "__main__":
         # This also means that the files have to be handled differently, because they are gzipped and not formatted as
         # one single big JSON dump, but rather many little JSON dumps, separated by line breaks.
         for ts, client, export in get_export_packets(args.host, args.port):
-            entry = {
-                "client": [str(i) for i in client],  # gotta cast to str or else it fails on sumbission to Opensearch
-                "header": export.header.to_dict(),
-                "flows": [flow.data for flow in export.flows]
-            }
-            # print whole josn to std
-            print(json.dumps(entry, indent=4, sort_keys=True))
-            # print only ts for logging
-            # print(ts)
-            submitted_ids.append(ts)  # used as uids
-            sumbit_json(opensearch_client, index_name_var, ts, entry)
-            # write_to_file(ts, entry)
+            flowversion = export.header.to_dict()['version']
+            for flow in export.flows:
+                entry = {
+                    "@timestamp": ts*1000,
+                    # "client": [str(i) for i in client],  # gotta cast to str or else it fails on sumbission to Opensearch
+                    # "header": export.header.to_dict(),
+                    "flowversion": flowversion,
+                    "flows": flow.data
+                }
+                # print whole josn to std
+                print(json.dumps(entry, indent=4, sort_keys=True))
+                # print only ts for logging
+                # print(ts)
+                submitted_ids.append(ts)  # used as uids
+                sumbit_json(opensearch_client, index_name_var, entry)
+                # write_to_file(ts, entry)
 
     except KeyboardInterrupt:
         remove_entires= False
