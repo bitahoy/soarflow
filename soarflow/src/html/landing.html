@@ -45,6 +45,29 @@
     </form>
   </div>
 
+  <p></p>
+
+
+  <div class="card">
+    <div class="card-header">
+      Uplaod JSON
+    </div>
+    <form method="post" action="/upload/json" enctype="multipart/form-data">
+    <div class="card-body">
+      <h5 class="card-title">Upload JSON data</h5>
+      <div class="mb-3">
+        <div class="input-group mb-2">
+          <div class="input-group-prepend">
+            <div class="input-group-text">Indexname</div>
+          </div>
+          <input type="text" class="form-control" id="index" name="index" placeholder="jsondata" value="jsondata">
+        </div>
+        <input class="form-control" type="file" id="formFile" name="file" accept=".json">
+      </div>
+      <button type="submit" class="btn btn-primary">Analyze & Import</a>
+    </div>
+    </form>
+  </div>
   
   <p></p>
 
@@ -58,11 +81,22 @@
       <h5 class="card-title">Sync with bitahoy cloud</h5>
         {% if bitahoy != None %}
         <div class="alert alert-success" role="alert">
-            <h4 class="alert-heading">Successfully connected to bitahoy cloud!</h4>
+            <p>Successfully connected to bitahoy cloud!</p>
         </div>
-        <p>Entries synced: {{ bitahoy }}</p>
+        <p>Entries synced: <span id="bitahoycounter">{{ bitahoy }}</span></p>
+        <script>
+            var bitahoycounter = document.getElementById("bitahoycounter");
+            var bitahoy = {{ bitahoy }};
+            var bitahoyinterval = setInterval(function() {
+                fetch('/bitahoy/stats').then(function(response) {
+                    return response.json();
+                }).then(function(data) {
+                    bitahoycounter.innerText = data.bitahoy;
+                });
+            }, 1000);
+        </script>
             <p>
-                <input type="hidden" name="action" value="start" />
+                <input type="hidden" name="action" value="stop" />
                 <input type="hidden" name="email" value="x" />
                 <input type="hidden" name="password" value="x" />
                 <button type="submit" class="btn btn-primary">Stop syncing</button>
