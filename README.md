@@ -12,7 +12,7 @@ Requirements:
 
 ## Our solution
 
-We took OpenSearch as the foundation to solve this problem. OpenSearch is an open source search engine and dashboard. It can be used to store data and visualize it in different dashboards for different stakeholders. In our solution, we used a helm chart to make it easy to spin up an OpenSearch instance in a kubernetes cluster. For local development, Tilt is used. In combination, we can run OpenSearch and the rest of this project fromk the commandline just by executing `tilt up`.
+We took OpenSearch as the foundation to solve this problem. OpenSearch is an open source search engine and dashboard. It can be used to store data and visualize it in different dashboards for different stakeholders. In our solution, we used a helm chart to make it easy to spin up an OpenSearch instance in a kubernetes cluster. For local development, Tilt is used. In combination, we can run OpenSearch and the rest of this project from the commandline just by executing `tilt up`.
 
 To get data into OpenSearch, we created some scripts and also a useful web dashboard to upload various file formats. The supported file formats are: CSV, PCAP and JSON. This can be generated data or hand-crafted data.
 
