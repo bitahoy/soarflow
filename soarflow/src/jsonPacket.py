@@ -3,6 +3,15 @@ from scapy.packet import Packet, NoPayload
 from scapy.fields import FlagValue
 
 def pkt2dict(pkt):
+    """
+    Convert a scapy packet to a dictionary
+
+    Limitation: if a value is not unicode decodable, it will be replaced with "<binary>"
+    
+    :param pkt: scapy packet
+    :return: dictionary
+    """
+
     if isinstance(pkt, NoPayload):
         return {}
     elif isinstance(pkt, FlagValue):

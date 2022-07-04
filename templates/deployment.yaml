@@ -1,3 +1,7 @@
+# yaml file
+#
+# Deploys the soarflow dashboard in kubernetes
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,8 +30,6 @@ spec:
         ports:
         - containerPort: 80
         resources: {}
-        #securityContext: 
-          #readOnlyRootFilesystem: true
         volumeMounts: []
         resources:
           requests:

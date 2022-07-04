@@ -1,3 +1,7 @@
+# Helm chart
+# You can easily deploy soarflow and OpenSearch in kubernetes with the helm chart.
+
+
 apiVersion: v2
 name: soarflow
 

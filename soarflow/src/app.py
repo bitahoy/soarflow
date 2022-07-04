@@ -19,21 +19,36 @@ templates = Jinja2Templates(directory="html")
 
 @app.get("/")
 async def home(request: Request):
+    """
+    The home page.
+    """
 	return templates.TemplateResponse("landing.html",{"request":request, "title": "Integrations", "bitahoy": app.counter[0]})
 
 
 @app.post("/actions")
 async def actions(request: Request):
+    """
+    The actions page.
+    """
     print(request.body)
     return {"success": "true"}
 
 @app.get("/bitahoy/stats")
 async def bitahoy_stats(request: Request):
+    """
+    Endpoint to get the current number of synced bitahoy cloud entries.
+    """
     return {"bitahoy": app.counter[0]}
 
 @app.post("/bitahoy")
 async def bitahoy(email: str = Form(), password: str = Form(), action: str = Form()):
-    print(f"{email} {password} {action}")
+    """
+    Start and stop the bitahoy cloud background task.
+
+    :param email: The email address of the Bitahoy Cloud account
+    :param password: The password of the Bitahoy Cloud account
+    :param action: The action to perform. Either "start" or "stop"
+    """
     if action == "start":
         async def task():
             token = await get_auth_token(email, password)
@@ -53,6 +68,9 @@ async def bitahoy(email: str = Form(), password: str = Form(), action: str = For
 
 @app.post("/upload/pcap")
 async def upload_pcap(request: Request, file: UploadFile, index: str = Body()):
+    """
+    Import a pcap file into OpenSearch.
+    """
     success = True
     try:
         import imports
@@ -68,6 +86,9 @@ async def upload_pcap(request: Request, file: UploadFile, index: str = Body()):
 
 @app.post("/upload/csv")
 async def upload_csv(request: Request, file: UploadFile, index: str = Body()):
+    """
+    Import a csv file into OpenSearch.
+    """
     success = True
     try:
         import imports
@@ -79,6 +100,9 @@ async def upload_csv(request: Request, file: UploadFile, index: str = Body()):
 
 @app.post("/upload/json")
 async def upload_json(request: Request, file: UploadFile, index: str = Body()):
+    """
+    Import a json file into OpenSearch.
+    """
     success = True
     try:
         import imports

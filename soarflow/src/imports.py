@@ -5,56 +5,25 @@ from jsonPacket import pkt2dict
 from opensearch import OpenSearchConnection
 
 
-def object_sanitizer(o):
-    if isinstance(o, bytes):
-        try:
-            return o.decode()
-        except UnicodeDecodeError:
-            "<binary>"
-    elif isinstance(o, dict):
-        d2 = {}
-        for k, v in o.items():
-            d2[k] = object_sanitizer(v)
-        return d2
-    elif isinstance(o, list):
-        l2 = []
-        for i in o:
-            l2.append(object_sanitizer(i))
-        return l2
-    elif isinstance(o, tuple):
-        l2 = []
-        for i in o:
-            l2.append(object_sanitizer(i))
-        return tuple(l2)
-    else:
-        return o
-
-
-
 class Imports:
+
+    """
+    A class to import data from various import format int o OpenSearch
+    """
 
     def __init__(self, opensearchconnection: OpenSearchConnection):
         self.opensearchconnection = opensearchconnection
 
-    async def importFromPcap(self, pcaplocation, indexname="pcap"):
+    async def importFromPcap(self, pcaplocation, indexname="pcap-0"):
+        """
+        Import a PCAP file into OpenSearch
+
+        :param pcaplocation: The PCAP file to import
+        :param indexname: The name of the index to create
+        :return: The response from the OpenSearch server
+        """
         scapy_cap = rdpcap(pcaplocation)
         indexname, indexversion = indexname.rsplit("-",1)
-        # res = await self.opensearchconnection.create_template(indexname+"-", {
-        #     "index_patterns": [indexname+"-*"],
-        #     "mappings": {
-        #         "_source": {
-        #             "enabled": False
-        #         },
-        #         "properties": {
-        #             "@timestamp": {
-        #                 "type": "date",
-        #                 "index": True,
-        #             }
-        #         }
-        #     }
-
-        # })
-        print(res)
         await self.opensearchconnection.create_index(indexname+"-"+indexversion, {
     "mappings": {
     "properties": {
@@ -68,11 +37,10 @@ class Imports:
         i = 0
         out = ""
         for packet in scapy_cap:
-            if True: #(packet.haslayer(DNS)):
+            if True:
                 
                 d = pkt2dict(packet)
                 d["@timestamp"] = int(float(packet.time) * 1000)
-                d = object_sanitizer(d)
                 upload.append(d)
                 if i > 500:
                     print(f"uploading {i}")
@@ -82,7 +50,14 @@ class Imports:
                 i += 1
         return "\n" + str(await self.opensearchconnection.add_documents(indexname+"-"+indexversion, upload))
 
-    async def importFromCsv(self, csv: str, indexname="csv"):
+    async def importFromCsv(self, csv: str, indexname="csv-0"):
+        """
+        Import a CSV file into OpenSearch
+
+        :param csv: The CSV file to import
+        :param indexname: The name of the index to create
+        :return: The response from the OpenSearch server
+        """
         indexname, indexversion = indexname.rsplit("-",1)
         header, body = csv.split("\n", 1)
         headers = header.split(",")
@@ -113,7 +88,14 @@ class Imports:
         return "\n" + str(await self.opensearchconnection.add_documents(indexname, items))
 
 
-    async def importFromJson(self, body: str, indexname="json"):
+    async def importFromJson(self, body: str, indexname="json-0"):
+        """
+        Import a JSON file into OpenSearch
+
+        :param body: The JSON file to import
+        :param indexname: The name of the index to create
+        :return: The response from the OpenSearch server
+        """
         indexname, indexversion = indexname.rsplit("-",1)
         body = body.strip("\n")
         items = []

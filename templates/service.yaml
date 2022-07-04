@@ -1,3 +1,6 @@
+# Kubernetes Service
+# Defines that the service should listen to port 80 and should be exposed to the internet
+
 apiVersion: v1
 kind: Service
 metadata:
