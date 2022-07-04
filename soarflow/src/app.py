@@ -22,7 +22,7 @@ async def home(request: Request):
     """
     The home page.
     """
-	return templates.TemplateResponse("landing.html",{"request":request, "title": "Integrations", "bitahoy": app.counter[0]})
+    return templates.TemplateResponse("landing.html",{"request":request, "title": "Integrations", "bitahoy": app.counter[0]})
 
 
 @app.post("/actions")
@@ -64,6 +64,7 @@ async def bitahoy(email: str = Form(), password: str = Form(), action: str = For
             app.task.cancel()
             app.task = None
             app.counter = [None]
+    await asyncio.sleep(1)
     return RedirectResponse(url="/", status_code=302)
 
 @app.post("/upload/pcap")
