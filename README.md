@@ -1,5 +1,46 @@
 # SOARFlow
 
+# Context: Hackathon in cooperation with the Cybersecurity day 2022
+
+This software was created to solve a challenge of the Hackathon which was provided by saarLB. The goal of this challenge is to create a configurable and adjustable dashboard which is able to include/import data using different information sources.
+
+Requirements:
+
+- It should be possible to create views for different stakeholders (board member, security management, IT staff)
+- The result should be easily adaptable to all kind of input data originating from log servers, APIs, databases, key-value-stores, ...
+- You can use already existing open source tools (e.g. grafana) or apps/services in the Microsoft cloud
+
+## Our solution
+
+We took OpenSearch as the foundation to solve this problem. OpenSearch is an open source search engine and dashboard. It can be used to store data and visualize it in different dashboards for different stakeholders. In our solution, we used a helm chart to make it easy to spin up an OpenSearch instance in a kubernetes cluster. For local development, Tilt is used. In combination, we can run OpenSearch and the rest of this project fromk the commandline just by executing `tilt up`.
+
+To get data into OpenSearch, we created some scripts and also a useful web dashboard to upload various file formats. The supported file formats are: CSV, PCAP and JSON. This can be generated data or hand-crafted data.
+
+Also, we created pipelines for netflow data and data from Bitahoy's Cloud API to showcase the possibility to stream all kinds of data into OpenSearch through our code.
+
+In various dashboards, we created a few charts to visualize the data.
+
+### Technologies used
+
+- Tilt: A tool for local development
+- Helm: A tool for deploying charts to kubernetes
+- OpenSearch: A search engine and dashboard
+- OpenSearch-Dashboard: A web dashboard for OpenSearch
+- python-fastapi: A REST API framework for Python
+- python-asyncio: A library for asynchronous programming in Python
+- python-aiohttp: A library for making HTTP requests in Python
+- scapy: A library for packet parsing and crafting
+- ...
+
+
+# Screenshots
+
+![](/screenshots/1.png)
+![](/screenshots/2.png)
+![](/screenshots/3.png)
+![](/screenshots/4.jpg)
+
+
 # Setup
 
 ## Known issues
