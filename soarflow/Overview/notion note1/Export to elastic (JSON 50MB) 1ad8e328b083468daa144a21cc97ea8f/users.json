@@ -1,0 +1,2 @@
+{"index": {"_index": "users", "_id": 1}}
+{"fields": {"id": "5fe60ae52b40e53609c803ec","nom": "Jessica","prenom": "Herrera","aboutMe": "anim","socials": [{"name": "faacebook","url": "https://www.facebook.com/profile?id=5445546"},{"name": "linkedin","url": "https://www.linkedin.com/profile?id=5445546"}],"affiliations": [{"organisation": "ANARCO","equipe": "developpement","pays": "Russian Federation","dateD": "2013-06-03T00:00:00Z" ,"dateF": "2013-06-03T00:00:00Z" }]}}

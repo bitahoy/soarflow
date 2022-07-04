@@ -1,0 +1,4 @@
+{"index": {"_index": "test", "_id": "1"}}
+{"type": "server", "timestamp": "2019-12-07T19:09:46,351Z", "level": "INFO", "component": "o.e.e.NodeEnvironment", "cluster.name": "docker-cluster", "node.name": "f97588749c79", "message": "heap size [989.8mb], compressed ordinary object pointers [true]" }
+{"index": {"_index": "test", "_id": "2"}}
+{"type": "server", "timestamp": "2019-12-07T19:09:46,353Z", "level": "INFO", "component": "o.e.n.Node", "cluster.name": "docker-cluster", "node.name": "f97588749c79", "message": "node name [f97588749c79], node ID [qJbs-xKRTxiaoIGXbrsVkg], cluster name [docker-cluster]" }
